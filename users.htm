@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>Untitled Document</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="public/styles/css/styles.css" type="text/css">
+</head>
+
+<body>
+
+	<div class="wr" id="app">
+
+		<table width="400" border="0" id="table_users">
+		  <tr id="table_header">
+			<td colspan="3">			
+				<h1>User List</h1>
+			</td>
+		  </tr>
+		  <tr>
+			<td colspan="3" id="table_line">			
+
+			</td>
+		  </tr>
+		  <tr v-for="(item, index) in users" v-bind:class="index%2 == 1?'row_with_bg':''">
+			<td class="status">
+				<img src="public/styles/images/green_icon.png" alt="ok">
+			</td>
+			<td>
+				{{item.login}}<br>
+				{{item.name}}
+			</td>
+			<td>...<br>
+				Default group
+			</td>
+		  </tr>
+		  <tr>
+			<td colspan="3" id="pages_numbers">			
+				<span v-for="item in pages" v-on:click="loadPage(item)" v-bind:class="item == pageNumber?'selected_page':''">{{item}}</span>
+				
+				<span v-if="pageNumber < pages.length" v-on:click="loadPage(0)">Next</span> 
+			</td>
+		  </tr>
+		  
+		</table>
+		<div id="logout" v-on:click="logout">Log Out</div>
+	</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="public/js/jquery.min.js"></script>
+
+<script>
+const COUNT_PER_PAGE = 5;
+
+let app = new Vue({
+	el: '#app',
+	data: {
+		pages: [
+		],
+		users: [
+			
+		],
+		countAll: 0,
+		pageNumber: 1
+	},
+	methods: {
+		loadUsers: function() {
+			axios
+			  .get('api.php?action=users')
+			  .then(response => {
+			  	if(response.data.status == 'ok'){
+			  		this.countAll = response.data.data.countAll; 
+			  		this.users = response.data.data.students;
+					this.createPages();
+				} else {
+					alert(response.data.messages[0]);
+				}
+			  });
+		},
+		loadPage: function(pageNumber){
+			if( pageNumber != 0){
+				this.pageNumber = pageNumber;
+			} else {
+				pageNumber = this.pageNumber = this.pageNumber + 1;
+			}
+
+			pos = (pageNumber -1)*COUNT_PER_PAGE;
+			axios
+			  .get('api.php?action=users&position=' + pos)
+			  .then(response => {
+			  	if(response.data.status == 'ok'){
+			  		this.countAll = response.data.data.countAll; 
+			  		this.users = response.data.data.students;
+					this.createPages();
+				} else {
+					alert(response.data.messages[0]);
+				}
+			  });
+		},
+		createPages: function(){
+			// формируем страницы
+			this.pages = [];
+			pages = this.countAll / COUNT_PER_PAGE;
+			for(let i=0; i<pages; ++i){
+				this.pages.push(i+1);
+			}
+			if( this.countAll % COUNT_PER_PAGE != 0 ){
+				this.pages.push(i+1);
+			}			
+		},
+		logout: function(){
+			$.ajax({
+			  url: "api.php?action=auth",
+			  type: "DELETE",
+			  data: {},
+			  success: function(response){
+			  	if(response.status == 'ok'){
+					document.location.href = 'login.htm';
+				} else {
+				  	alert(response.messages[0]);
+				}
+			  },
+			  dataType: 'json'
+			});
+		}
+	},
+	beforeMount(){
+		this.loadUsers()
+	}
+});
+</script>
+</body>
+</html>
