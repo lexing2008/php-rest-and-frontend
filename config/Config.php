@@ -30,7 +30,7 @@ class Config {
     public string $sessionName = 'TEST2_BY';
     
     /**
-     *
+     * Домен сайта
      * @var string 
      */
     public string $domain = 'php-rest-and-frontend';
