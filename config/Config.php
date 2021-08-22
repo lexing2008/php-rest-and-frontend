@@ -16,7 +16,7 @@ class Config {
      * Настройки соединения с БД
      * @var array 
      */
-    public $db = [
+    public array $db = [
         'host' => 'localhost',
         'name' => 'db_test_learn',
         'user' => 'root',
@@ -27,5 +27,11 @@ class Config {
      * Имя сессии
      * @var string 
      */
-    public $sessionName = 'TEST2_BY';
+    public string $sessionName = 'TEST2_BY';
+    
+    /**
+     *
+     * @var string 
+     */
+    public string $domain = 'php-rest-and-frontend';
 }

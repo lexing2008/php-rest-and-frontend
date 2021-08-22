@@ -30,7 +30,7 @@ class App
         $config = Config::getInstance();
                 
         // запускаем сессию
-        $this->session_start();
+        $this->sessionStart();
         
         // подключаемся к БД
         $db = DB::getInstance();
@@ -46,7 +46,7 @@ class App
     /**
      * Старт сессии
      */
-    public function session_start(){
+    public function sessionStart(){
         $config = Config::getInstance();
 
         session_name( $config->sessionName );

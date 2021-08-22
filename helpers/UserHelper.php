@@ -119,6 +119,18 @@ class UserHelper
      */
     public function logout(){
         unset($_SESSION['user']);
+        
+        $authHash = $_COOKIE['authHash'];
+        $userId = (int)$_COOKIE['userId'];
+        
+        // удаляем из таблицы хэ авторизации
+        if(!empty($authHash) && !empty($userId)){
+            $sth = $db->prepare('DELETE FROM auth_hashes WHERE `hash` = :hash AND user_id = :user_id');
+            $sth->execute([
+                    'hash'     => $authHash,
+                    'user_id'  => $userId
+                ]);
+        }
         CookieHelper::deleteCookie('authHash');
         CookieHelper::deleteCookie('userId');
     }

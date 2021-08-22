@@ -45,50 +45,7 @@
 	
 	</div>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="public/js/jquery.min.js"></script>
-
-<script>
-let app = new Vue({
-	el: '#block-login',
-	data: {
-		login: '',
-		password: '',
-		remember: false,
-		messageError: ''
-	},
-	methods: {
-		loginInService: function() {
-			this.messageError = '';
-			if(this.login == ''){
-				this.messageError = 'Логин не должен быть пустым';
-				return;
-			}
-			if(this.password == ''){
-				this.messageError = 'Пароль не должен быть пустым';
-				return;
-			}
-
-			$.ajax({
-			  url: "api.php?action=auth",
-			  type: "POST",
-			  data: {
-					login: this.login,
-					password: this.password,
-					remember: this.remember,
-				  },
-			  success: function(response){
-			  	if(response.status == 'ok'){
-					document.location.href = 'users.htm';
-				} else {
-				  	alert(response.messages[0]);
-				}
-			  },
-			  dataType: 'json'
-			});
-		}
-	}
-});
-</script>
+    <script src="public/js/login.js"></script>
 </body>
 </html>
